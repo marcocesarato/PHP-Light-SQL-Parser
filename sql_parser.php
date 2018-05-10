@@ -1,6 +1,7 @@
 <?php
 /**
  * Get SQL Query method
+ * @author Marco Cesarato <cesarato.developer@gmail.com>
  * @param $query
  * @return string
  */
