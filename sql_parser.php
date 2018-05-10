@@ -24,7 +24,7 @@ function sql_query_method($query){
 /**
  * Get SQL Query First Table
  * @param $query
- * @return int|string
+ * @return boolean|string
  */
 function sql_query_table($query){
 	$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
@@ -35,7 +35,7 @@ function sql_query_table($query){
 			$table = preg_replace('#[\S\s]*INSERT[\s]+INTO[\s]+([\w]+)[\s]*[\S\s]*#i','$1', $query);
 			if(empty(trim($table)) || $table == $query){
 				$table = preg_replace('#[\S\s]*DELETE[\s]+([\w]+)[\s]*[\S\s]*#i','$1', $query);
-				if(empty(trim($table)) || $table == $query) return null;
+				if(empty(trim($table)) || $table == $query) return false;
 			}
 		}
 	}
