@@ -24,6 +24,7 @@ function sql_query_method($query){
 
 /**
  * Get SQL Query First Table
+ * @author Marco Cesarato <cesarato.developer@gmail.com>
  * @param $query
  * @return boolean|string
  */
