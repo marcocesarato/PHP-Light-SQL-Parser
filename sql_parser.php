@@ -53,7 +53,7 @@ function sql_query_tables($query){
         $table = sql_query_table($query);
         if(!empty($table)){
             $tables[] = $table;
-            $query = preg_replace('#('.$table.'([\s]+(AS[\s]+)?[\w]*)?[\s]*(,?))#i','',$query);
+            $query = preg_replace('#('.$table.'([\s]+(AS[\s]+)?[\w]+)?[\s]*(,?))#i','',$query);
             preg_match('/SELECT([\S\s]+)FROM/', $query, $matches);
             foreach($matches as $_m){
                 if(!empty(trim($_m[0])))
