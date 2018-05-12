@@ -13,7 +13,7 @@ function sql_query_method($query){
     foreach($query as $_q){
         foreach($methods as $method) {
             $_method = str_replace(' ', '[\s]+', $method);
-            if(preg_match('/^[\s]*'.$_method.'[\s]+/i', $_q)){
+            if(preg_match('#^[\s]*'.$_method.'[\s]+#i', $_q)){
                 return $method;
             }
         }
@@ -54,7 +54,7 @@ function sql_query_tables($query){
         if(!empty($table)){
             $tables[] = $table;
             $query = preg_replace('#('.$table.'([\s]+(AS[\s]+)?[\w]+)?[\s]*(,?))#i','',$query);
-            preg_match('/SELECT([\S\s]+)FROM/', $query, $matches);
+            preg_match('#SELECT([\S\s]+)FROM#i', $query, $matches);
             foreach($matches as $_m){
                 if(!empty(trim($_m[0])))
                     $match = true;
