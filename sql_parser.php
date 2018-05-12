@@ -24,10 +24,9 @@ function sql_query_method($query){
  * Get SQL Query First Table
  * @author Marco Cesarato <cesarato.developer@gmail.com>
  * @param $query
- * @return boolean|string
+ * @return string
  */
 function sql_query_table($query){
-    $table = '';
     $query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
     $patterns = array(
         '#[\S\s]+[\s]+FROM[\s]+([\w]+)[\s]*[\S\s]*#i',
@@ -37,7 +36,30 @@ function sql_query_table($query){
     );
     foreach($patterns as $pattern){
         $table = preg_replace($pattern,'$1', $query);
-        if(!empty(trim($table)) || $table != $query) break;
+        if(!empty(trim($table)) && $table != $query) return trim($table);
     }
-    return trim($table);
+    return '';
+}
+/**
+ * Get SQL Query Tables
+ * @author Marco Cesarato <cesarato.developer@gmail.com>
+ * @param $query
+ * @return array
+ */
+function sql_query_tables($query){
+    $tables = array();
+    do {
+        $match = false;
+        $table = sql_query_table($query);
+        if(!empty($table)){
+            $tables[] = $table;
+            $query = preg_replace('#('.$table.'([\s]+(AS[\s]+)?[\w]*)?[\s]*(,?))#i','',$query);
+            preg_match('/SELECT([\S\s]+)FROM/', $query, $matches);
+            foreach($matches as $_m){
+                if(!empty(trim($_m[0])))
+                    $match = true;
+            }
+        }
+    } while($match);
+    return $tables;
 }
