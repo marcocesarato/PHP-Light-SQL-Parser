@@ -18,7 +18,7 @@ function sql_query_method($query){
             }
         }
     }
-    return 'UNKOWN';
+    return '';
 }
 /**
  * Get SQL Query First Table
