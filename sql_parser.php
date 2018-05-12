@@ -8,10 +8,14 @@
 function sql_query_method($query){
 	$methods = array('SELECT','INSERT','UPDATE','DELETE','REPLACE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE');
 	$query = preg_replace('#\/\*[\s\S]*?\*\/#','', $query);
-	foreach($methods as $method) {
-		$_method = str_replace(' ', '[\s]+', $method);
-		if(preg_match('/^[\s]*'.$_method.'[\s]+/i', $query)){
-			return '$method';
+	$query = preg_replace(';(?:(?<=["'];)|(?=["']))', '', $query);
+	$query = explode(';', $query);
+	foreach($query as $_q){
+		foreach($methods as $method) {
+			$_method = str_replace(' ', '[\s]+', $method);
+			if(preg_match('/^[\s]*'.$_method.'[\s]+/i', $_q)){
+				return '$method';
+			}
 		}
 	}
 	return 'UNKOWN';
