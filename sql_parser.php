@@ -63,3 +63,20 @@ function sql_query_tables($query){
     } while($match);
     return $tables;
 }
+/**
+ * Get SQL SELECT fields
+ * @author Marco Cesarato <cesarato.developer@gmail.com>
+ * @param $query
+ * @return array
+ */
+function sql_query_fields($query){
+    $fields = array();
+    preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $query, $matches);
+    $match = trim($matches[1]);
+    $match = explode(',', $match);
+    foreach($match as $field){
+        $field = preg_replace('#([\s]+(AS[\s]+)?[\w]+)#i','', trim($field));
+        $fields[] = $field;
+    }
+    return $fields;
+}
