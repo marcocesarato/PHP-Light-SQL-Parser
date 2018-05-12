@@ -72,11 +72,13 @@ function sql_query_tables($query){
 function sql_query_fields($query){
     $fields = array();
     preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $query, $matches);
-    $match = trim($matches[1]);
-    $match = explode(',', $match);
-    foreach($match as $field){
-        $field = preg_replace('#([\s]+(AS[\s]+)?[\w]+)#i','', trim($field));
-        $fields[] = $field;
+    if(!empty($matches[1])){
+        $match = trim($matches[1]);
+        $match = explode(',', $match);
+        foreach($match as $field){
+            $field = preg_replace('#([\s]+(AS[\s]+)?[\w]+)#i','', trim($field));
+            $fields[] = $field;
+        }
     }
     return $fields;
 }
