@@ -18,7 +18,7 @@ class SimpleSQLParser {
 	 */
 	public function method(){
 		$methods = array('SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE', 'ALTER');
-		$queries = $this->splitQuery();
+		$queries = $this->_queries();
 		foreach($queries as $query){
 			foreach($methods as $method) {
 				$_method = str_replace(' ', '[\s]+', $method);
@@ -36,12 +36,12 @@ class SimpleSQLParser {
 	 * @return array
 	 */
 	public function tables(){
-		$queries = $this->splitQuery();
+		$queries = $this->_queries();
 		foreach($queries as $query) {
 			$tables = array();
 			do {
 				$match = false;
-				$table = self::_table($query);
+				$table = $this->_table($query);
 				if (!empty($table)) {
 					$tables[] = $table;
 					$query = preg_replace('#(' . $table . '([\s]+(AS[\s]+)?[\w\_]+)?[\s]*(,?))#i', '', $query);
@@ -50,37 +50,6 @@ class SimpleSQLParser {
 			} while ($match);
 		}
 		return $tables;
-	}
-
-	/**
-	 * Get SQL Query First Table
-	 * @param $query
-	 * @return string
-	 */
-	private static function _table($query){
-		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
-		$patterns = array(
-			'#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]*(WHERE|JOIN|GROUP BY|ORDER BY|OPTION|LEFT|INNER|RIGHT|OUTER|UNION|SET|HAVING|[\(]|[\)])?[\S\s]*#i',
-			'#[\S\s]*UPDATE[\s]+([\w\_]+)[\s]*(SET|[\(]|[\)])?[\S\s]*#i',
-			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]*(VALUES|SELECT|[\(]|[\)])?[\S\s]*#i',
-			'#[\S\s]*TABLE[\s]+([\w\_]+)[\s]*(WHERE|ORDER BY|OPTION|[\(]|[\)])?[\S\s]*#i'
-		);
-		foreach($patterns as $pattern){
-			$table = preg_replace($pattern,'$1', $query);
-			if(!empty(trim($table)) && $table != $query) return trim($table);
-		}
-		return '';
-	}
-
-	/**
-	 * Get all queries
-	 * @return array
-	 */
-	public function splitQuery(){
-		$queries = preg_replace('#\/\*[\s\S]*?\*\/#','', $this->query);
-		$queries = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $queries);
-		$queries = explode(';', $queries);
-		return $queries;
 	}
 
 	/**
@@ -102,5 +71,36 @@ class SimpleSQLParser {
 			}
 		}
 		return $fields;
+	}
+
+	/**
+	 * Get SQL Query First Table
+	 * @param $query
+	 * @return string
+	 */
+	private function _table($query){
+		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
+		$patterns = array(
+			'#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]*(WHERE|JOIN|GROUP BY|ORDER BY|OPTION|LEFT|INNER|RIGHT|OUTER|UNION|SET|HAVING|[\(]|[\)])?[\S\s]*#i',
+			'#[\S\s]*UPDATE[\s]+([\w\_]+)[\s]*(SET|[\(]|[\)])?[\S\s]*#i',
+			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]*(VALUES|SELECT|[\(]|[\)])?[\S\s]*#i',
+			'#[\S\s]*TABLE[\s]+([\w\_]+)[\s]*(WHERE|ORDER BY|OPTION|[\(]|[\)])?[\S\s]*#i'
+		);
+		foreach($patterns as $pattern){
+			$table = preg_replace($pattern,'$1', $query);
+			if(!empty(trim($table)) && $table != $query) return trim($table);
+		}
+		return '';
+	}
+
+	/**
+	 * Get all queries
+	 * @return array
+	 */
+	private function _queries(){
+		$queries = preg_replace('#\/\*[\s\S]*?\*\/#','', $this->query);
+		$queries = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $queries);
+		$queries = explode(';', $queries);
+		return $queries;
 	}
 }
