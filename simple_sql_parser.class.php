@@ -62,7 +62,8 @@ class SimpleSQLParser {
 		$patterns = array(
 			'#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]*(WHERE|JOIN|GROUP BY|ORDER BY|OPTION|LEFT|INNER|RIGHT|OUTER|UNION|SET|HAVING|[\(]|[\)])?[\S\s]*#i',
 			'#[\S\s]*UPDATE[\s]+([\w\_]+)[\s]*(SET|[\(]|[\)])?[\S\s]*#i',
-			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]*(VALUES|SELECT|[\(]|[\)])?[\S\s]*#i'
+			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]*(VALUES|SELECT|[\(]|[\)])?[\S\s]*#i',
+			'#[\S\s]*TABLE[\s]+([\w\_]+)[\s]*(VALUES|SELECT|[\(]|[\)])?[\S\s]*#i'
 		);
 		foreach($patterns as $pattern){
 			$table = preg_replace($pattern,'$1', $query);
