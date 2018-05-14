@@ -85,7 +85,7 @@ class SimpleSQLParser {
 				}
 				break;
 			case 'UPDATE':
-				preg_match('#UPDATE[\s]+([\w\_]+([\s]+(AS[\s]+)?[\w\_]+)?[\s]*)SET\(([\S\s]*)\)[\s]+WHERE#i', $this->query, $matches);
+				preg_match('#UPDATE[\s]+([\w\_]+([\s]+(AS[\s]+)?[\w\_]+)?[\s]*)SET([\S\s]*)[\s]+WHERE#i', $this->query, $matches);
 				if (!empty($matches[4])) {
 					$match = trim($matches[4]);
 					$match = explode(',', $match);
