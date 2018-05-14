@@ -1,10 +1,10 @@
 <?php
 /**
- * Simple SQL Parser Class
+ * Light SQL Parser Class
  * @author Marco Cesarato <cesarato.developer@gmail.com>
  */
 
-class SimpleSQLParser {
+class LightSQLParser {
 
 	public $query = '';
 
