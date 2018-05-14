@@ -32,7 +32,7 @@ function sql_query_table($query){
         '#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]*[\S\s]*#i',
         '#[\S\s]*UPDATE[\s]+([\w\_]+)[\s]*[\S\s]*#i',
         '#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]*[\S\s]*#i',
-        '#[\S\s]*DELETE[\s]+([\w\_S]+)[\s]*[\S\s]*#i'
+        '#[\S\s]*DELETE[\s]+([\w\_]+)[\s]*[\S\s]*#i'
     );
     foreach($patterns as $pattern){
         $table = preg_replace($pattern,'$1', $query);
