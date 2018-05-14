@@ -29,7 +29,7 @@ function sql_query_method($query){
 function sql_query_table($query){
     $query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
     $patterns = array(
-        '#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]*[\S\s]*#i',
+        '#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]*(WHERE|JOIN|ORDER|LEFT|INNER|RIGHT|OUTER|UNION|[\(])?[\S\s]*#i',
         '#[\S\s]*UPDATE[\s]+([\w\_]+)[\s]*[\S\s]*#i',
         '#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]*[\S\s]*#i',
         '#[\S\s]*DELETE[\s]+([\w\_]+)[\s]*[\S\s]*#i'
