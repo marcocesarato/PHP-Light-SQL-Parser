@@ -6,7 +6,7 @@
  * @return string
  */
 function sql_query_method($query){
-    $methods = array('SELECT','INSERT','UPDATE','DELETE','REPLACE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE');
+    $methods = array('SELECT','INSERT','UPDATE','DELETE','REPLACE','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE');
     $query = preg_replace('#\/\*[\s\S]*?\*\/#','', $query);
     $query = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $query);
     $query = explode(';', $query);
