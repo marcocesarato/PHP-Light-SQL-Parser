@@ -53,22 +53,47 @@ class SimpleSQLParser {
 	}
 
 	/**
-	 * Get SQL SELECT fields
+	 * Get Query fields (at the moment only SELECT/INSERT/UPDATE)
 	 * @param $query
 	 * @return array
 	 */
-	public function selectedFields(){
+	public function fields(){
 		$fields = array();
-		if($this->method() == 'SELECT') {
-			preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $this->query, $matches);
-			if (!empty($matches[1])) {
-				$match = trim($matches[1]);
-				$match = explode(',', $match);
-				foreach ($match as $field) {
-					$field = preg_replace('#([\s]+(AS[\s]+)?[\w\_]+)#i', '', trim($field));
-					$fields[] = $field;
+		$method = $this->method();
+		switch ($method){
+			case 'SELECT':
+				preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $this->query, $matches);
+				if (!empty($matches[1])) {
+					$match = trim($matches[1]);
+					$match = explode(',', $match);
+					foreach ($match as $field) {
+						$field = preg_replace('#([\s]+(AS[\s]+)?[\w\_]+)#i', '', trim($field));
+						$fields[] = $field;
+					}
 				}
-			}
+				break;
+			case 'INSERT':
+				preg_match('#INSERT[\s]+INTO[\s]+([\w\_]+([\s]+(AS[\s]+)?[\w\_]+)?[\s]*)\(([\S\s]*)\)[\s]+VALUES#i', $this->query, $matches);
+				if (!empty($matches[4])) {
+					$match = trim($matches[4]);
+					$match = explode(',', $match);
+					foreach ($match as $field) {
+						$field = preg_replace('#([\s]+(AS[\s]+)?[\w\_]+)#i', '', trim($field));
+						$fields[] = $field;
+					}
+				}
+				break;
+			case 'UPDATE':
+				preg_match('#UPDATE[\s]+([\w\_]+([\s]+(AS[\s]+)?[\w\_]+)?[\s]*)SET\(([\S\s]*)\)[\s]+WHERE#i', $this->query, $matches);
+				if (!empty($matches[4])) {
+					$match = trim($matches[4]);
+					$match = explode(',', $match);
+					foreach ($match as $field) {
+						$field = preg_replace('#([\s]+(\=[\s]+)?[\S\s]+)#i', '', trim($field));
+						$fields[] = $field;
+					}
+				}
+				break;
 		}
 		return $fields;
 	}
