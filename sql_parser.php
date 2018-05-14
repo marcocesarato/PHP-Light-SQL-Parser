@@ -54,11 +54,7 @@ function sql_query_tables($query){
         if(!empty($table)){
             $tables[] = $table;
             $query = preg_replace('#('.$table.'([\s]+(AS[\s]+)?[\S]+)?[\s]*(,?))#i','',$query);
-            preg_match('#SELECT([\S\s]+)FROM#i', $query, $matches);
-            foreach($matches as $_m){
-                if(!empty(trim($_m[0])))
-                    $match = true;
-            }
+            $match = true;
         }
     } while($match);
     return $tables;
