@@ -3,6 +3,7 @@
  * Simple SQL Parser Class
  * @author Marco Cesarato <cesarato.developer@gmail.com>
  */
+
 class SimpleSQLParser {
 
 	public $query = '';
