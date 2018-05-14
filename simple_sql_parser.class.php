@@ -17,14 +17,12 @@ class SimpleSQLParser {
 	 * @return string
 	 */
 	public function method(){
-		$methods = array('SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE');
-		$query = preg_replace('#\/\*[\s\S]*?\*\/#','', $this->query);
-		$query = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $query);
-		$query = explode(';', $query);
-		foreach($query as $_q){
+		$methods = array('SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE', 'ALTER');
+		$queries = $this->splitQuery();
+		foreach($queries as $query){
 			foreach($methods as $method) {
 				$_method = str_replace(' ', '[\s]+', $method);
-				if(preg_match('#^[\s]*'.$_method.'[\s]+#i', $_q)){
+				if(preg_match('#^[\s]*'.$_method.'[\s]+#i', $query)){
 					return $method;
 				}
 			}
@@ -38,17 +36,19 @@ class SimpleSQLParser {
 	 * @return array
 	 */
 	public function tables(){
-		$query = $this->query;
-		$tables = array();
-		do {
-			$match = false;
-			$table = self::_table($query);
-			if(!empty($table)){
-				$tables[] = $table;
-				$query = preg_replace('#('.$table.'([\s]+(AS[\s]+)?[\w\_]+)?[\s]*(,?))#i','',$query);
-				$match = true;
-			}
-		} while($match);
+		$queries = $this->splitQuery();
+		foreach($queries as $query) {
+			$tables = array();
+			do {
+				$match = false;
+				$table = self::_table($query);
+				if (!empty($table)) {
+					$tables[] = $table;
+					$query = preg_replace('#(' . $table . '([\s]+(AS[\s]+)?[\w\_]+)?[\s]*(,?))#i', '', $query);
+					$match = true;
+				}
+			} while ($match);
+		}
 		return $tables;
 	}
 
@@ -70,6 +70,17 @@ class SimpleSQLParser {
 			if(!empty(trim($table)) && $table != $query) return trim($table);
 		}
 		return '';
+	}
+
+	/**
+	 * Get all queries
+	 * @return array
+	 */
+	public function splitQuery(){
+		$queries = preg_replace('#\/\*[\s\S]*?\*\/#','', $this->query);
+		$queries = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $queries);
+		$queries = explode(';', $queries);
+		return $queries;
 	}
 
 	/**
