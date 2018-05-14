@@ -29,10 +29,10 @@ function sql_query_method($query){
 function sql_query_table($query){
     $query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
     $patterns = array(
-        '#[\S\s]+[\s]+FROM[\s]+([\S]+)[\s]*[\S\s]*#i',
-        '#[\S\s]*UPDATE[\s]+([\S]+)[\s]*[\S\s]*#i',
-        '#[\S\s]*INSERT[\s]+INTO[\s]+([\S]+)[\s]*[\S\s]*#i',
-        '#[\S\s]*DELETE[\s]+([\S]+)[\s]*[\S\s]*#i'
+        '#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]*[\S\s]*#i',
+        '#[\S\s]*UPDATE[\s]+([\w\_]+)[\s]*[\S\s]*#i',
+        '#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]*[\S\s]*#i',
+        '#[\S\s]*DELETE[\s]+([\w\_S]+)[\s]*[\S\s]*#i'
     );
     foreach($patterns as $pattern){
         $table = preg_replace($pattern,'$1', $query);
@@ -53,7 +53,7 @@ function sql_query_tables($query){
         $table = sql_query_table($query);
         if(!empty($table)){
             $tables[] = $table;
-            $query = preg_replace('#('.$table.'([\s]+(AS[\s]+)?[\S]+)?[\s]*(,?))#i','',$query);
+            $query = preg_replace('#('.$table.'([\s]+(AS[\s]+)?[\w\_]+)?[\s]*(,?))#i','',$query);
             $match = true;
         }
     } while($match);
@@ -72,7 +72,7 @@ function sql_query_fields_selected($query){
         $match = trim($matches[1]);
         $match = explode(',', $match);
         foreach($match as $field){
-            $field = preg_replace('#([\s]+(AS[\s]+)?[\S]+)#i','', trim($field));
+            $field = preg_replace('#([\s]+(AS[\s]+)?[\w\_]+)#i','', trim($field));
             $fields[] = $field;
         }
     }
