@@ -78,13 +78,15 @@ class SimpleSQLParser {
 	 */
 	public function selectedFields(){
 		$fields = array();
-		preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $this->query, $matches);
-		if(!empty($matches[1])){
-			$match = trim($matches[1]);
-			$match = explode(',', $match);
-			foreach($match as $field){
-				$field = preg_replace('#([\s]+(AS[\s]+)?[\w\_]+)#i','', trim($field));
-				$fields[] = $field;
+		if($this->method() == 'SELECT') {
+			preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $this->query, $matches);
+			if (!empty($matches[1])) {
+				$match = trim($matches[1]);
+				$match = explode(',', $match);
+				foreach ($match as $field) {
+					$field = preg_replace('#([\s]+(AS[\s]+)?[\w\_]+)#i', '', trim($field));
+					$fields[] = $field;
+				}
 			}
 		}
 		return $fields;
