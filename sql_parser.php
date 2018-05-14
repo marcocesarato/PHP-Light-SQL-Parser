@@ -69,7 +69,7 @@ function sql_query_tables($query){
  * @param $query
  * @return array
  */
-function sql_query_fields($query){
+function sql_query_fields_selected($query){
     $fields = array();
     preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $query, $matches);
     if(!empty($matches[1])){
