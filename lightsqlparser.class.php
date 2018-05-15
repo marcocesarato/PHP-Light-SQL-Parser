@@ -6,8 +6,16 @@
 
 class LightSQLParser {
 
+	// Public
 	public $query = '';
 
+	// Private
+	private static $connectors = array('ON','AS','LIMIT','WHERE','JOIN','GROUP BY','ORDER BY','OPTION','LEFT','INNER','RIGHT','OUTER','SET','HAVING','VALUES','SELECT','INTO','\(','\)');
+	private static $name_delimiters = array('ON', 'LIMIT','WHERE','JOIN','GROUP BY','ORDER BY','OPTION','LEFT','INNER','RIGHT','OUTER','SET','HAVING','VALUES','SELECT','INTO','\(','\)');
+
+	/**
+	 * Constructor
+	 */
 	public function __construct($query) {
 		$this->query = $query;
 	}
@@ -38,17 +46,15 @@ class LightSQLParser {
 	 */
 	public function tables(){
 		$tables = array();
-		$placeholder = '__PLACEHOLDER__';
 		$queries = $this->_queries();
+		$implode = implode('|', self::$name_delimiters);
 		foreach($queries as $query) {
-			$query = str_replace($placeholder, $placeholder . '_', $query);
 			do {
 				$match = false;
 				$table = $this->_table($query);
-				if (!empty($table) && $table != trim($placeholder)) {
-					$table = $query = str_replace($placeholder . '_', $placeholder, $table);
+				if (!empty($table)) {
 					$tables[] = $table;
-					$query = preg_replace('#(' . $table . '([\s]+(AS[\s]+)?[\w]+)?[\s]*(,?))#i', ' ' . $placeholder . ' ', $query);
+					$query = preg_replace('#(' . $table . '([\s]+(?!'.$implode.')(AS[\s]+)?[\w]+)?[\s]*(,?))#i', '', $query);
 					$match = true;
 				}
 			} while ($match);
@@ -112,12 +118,13 @@ class LightSQLParser {
 	 */
 	private function _table($query){
 		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
+		$implode = implode('|', self::$connectors);
 		$patterns = array(
-			'#[\S\s]*UPDATE[\s]+([\w]+)([\s]+(SET|[\(]|[\)]|[\;]))?[\S\s]*#i',
-			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w]+)([\s]+(VALUES|SELECT|[\(]|[\)]|[\;])?[\S\s]*#i',
-			'#[\S\s]+[\s]+JOIN[\s]+([\w]+)([\s]+(ON|AS|LIMIT|WHERE|JOIN|GROUP BY|ORDER BY|OPTION|LEFT|INNER|RIGHT|OUTER|UNION|SET|HAVING|[\(]|[\)]|[\;]))?[\S\s]*#i',
-			'#[\S\s]+[\s]+FROM[\s]+([\w]+)([\s]+(AS|LIMIT|WHERE|JOIN|GROUP BY|ORDER BY|OPTION|LEFT|INNER|RIGHT|OUTER|UNION|SET|HAVING|[\(]|[\)]|[\;]))?[\S\s]*#i',
-			'#[\S\s]*TABLE[\s]+([\w]+)([\s]+(WHERE|ORDER BY|OPTION|[\(]|[\)]|[\;]))?[\S\s]*#i'
+			'#[\S\s]*INSERT[\s]+INTO[\s]+(?!'.$implode.')([\w]+)([\s]+('.$implode.'))?[\S\s]*#i',
+			'#[\S\s]*UPDATE[\s]+(?!'.$implode.')([\w]+)([\s]+('.$implode.'))?[\S\s]*#i',
+			'#[\S\s]+[\s]+JOIN[\s]+(?!'.$implode.')([\w]+)([\s]+('.$implode.'))?[\S\s]*#i',
+			'#[\S\s]+[\s]+FROM[\s]+(?!'.$implode.')([\w]+)([\s]+('.$implode.'))?[\S\s]*#i',
+			'#[\S\s]*TABLE[\s]+(?!'.$implode.')([\w]+)([\s]+('.$implode.'))?[\S\s]*#i'
 		);
 		foreach($patterns as $pattern){
 			$table = preg_replace($pattern,'$1', $query);
