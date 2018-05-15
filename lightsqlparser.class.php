@@ -1,3 +1,4 @@
+<?php
 /**
  * Light SQL Parser Class
  * @author Marco Cesarato <cesarato.developer@gmail.com>
