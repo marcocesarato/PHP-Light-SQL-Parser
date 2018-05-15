@@ -1,4 +1,3 @@
-<?php
 /**
  * Light SQL Parser Class
  * @author Marco Cesarato <cesarato.developer@gmail.com>
@@ -17,9 +16,9 @@ class LightSQLParser {
 	 * @param $query
 	 * @return string
 	 */
-	public function method(){
+	public function method($query = null){
 		$methods = array('SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE', 'ALTER');
-		$queries = $this->_queries();
+		$queries = empty($query) ? $this->_queries() : array($query);
 		foreach($queries as $query){
 			foreach($methods as $method) {
 				$_method = str_replace(' ', '[\s]+', $method);
@@ -50,7 +49,7 @@ class LightSQLParser {
 				}
 			} while ($match);
 		}
-		return $tables;
+		return array_unique($tables);
 	}
 
 	/**
@@ -60,43 +59,46 @@ class LightSQLParser {
 	 */
 	public function fields(){
 		$fields = array();
-		$method = $this->method();
-		switch ($method){
-			case 'SELECT':
-				preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $this->query, $matches);
-				if (!empty($matches[1])) {
-					$match = trim($matches[1]);
-					$match = explode(',', $match);
-					foreach ($match as $field) {
-						$field = preg_replace('#([\s]+(AS[\s]+)?[\w\_]+)#i', '', trim($field));
-						$fields[] = $field;
+		$queries = $this->_queries();
+		foreach($queries as $query) {
+			$method = $this->method($method);
+			switch ($method){
+				case 'SELECT':
+					preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $query, $matches);
+					if (!empty($matches[1])) {
+						$match = trim($matches[1]);
+						$match = explode(',', $match);
+						foreach ($match as $field) {
+							$field = preg_replace('#([\s]+(AS[\s]+)?[\w\_]+)#i', '', trim($field));
+							$fields[] = $field;
+						}
 					}
-				}
-				break;
-			case 'INSERT':
-				preg_match('#INSERT[\s]+INTO[\s]+([\w\_]+([\s]+(AS[\s]+)?[\w\_]+)?[\s]*)\(([\S\s]*)\)[\s]+VALUES#i', $this->query, $matches);
-				if (!empty($matches[4])) {
-					$match = trim($matches[4]);
-					$match = explode(',', $match);
-					foreach ($match as $field) {
-						$field = preg_replace('#([\s]+(AS[\s]+)?[\w\_]+)#i', '', trim($field));
-						$fields[] = $field;
+					break;
+				case 'INSERT':
+					preg_match('#INSERT[\s]+INTO[\s]+([\w\_]+([\s]+(AS[\s]+)?[\w\_]+)?[\s]*)\(([\S\s]*)\)[\s]+VALUES#i', $query, $matches);
+					if (!empty($matches[4])) {
+						$match = trim($matches[4]);
+						$match = explode(',', $match);
+						foreach ($match as $field) {
+							$field = preg_replace('#([\s]+(AS[\s]+)?[\w\_]+)#i', '', trim($field));
+							$fields[] = $field;
+						}
 					}
-				}
-				break;
-			case 'UPDATE':
-				preg_match('#UPDATE[\s]+([\w\_]+([\s]+(AS[\s]+)?[\w\_]+)?[\s]*)SET([\S\s]*)[\s]+(WHERE|[\;])?#i', $this->query, $matches);
-				if (!empty($matches[4])) {
-					$match = trim($matches[4]);
-					$match = explode(',', $match);
-					foreach ($match as $field) {
-						$field = preg_replace('#([\s]*\=[\s]*[\S\s]+)#i', '', trim($field));
-						$fields[] = $field;
+					break;
+				case 'UPDATE':
+					preg_match('#UPDATE[\s]+([\w\_]+([\s]+(AS[\s]+)?[\w\_]+)?[\s]*)SET([\S\s]*)[\s]+(WHERE|[\;])?#i', $query, $matches);
+					if (!empty($matches[4])) {
+						$match = trim($matches[4]);
+						$match = explode(',', $match);
+						foreach ($match as $field) {
+							$field = preg_replace('#([\s]*\=[\s]*[\S\s]+)#i', '', trim($field));
+							$fields[] = $field;
+						}
 					}
-				}
-				break;
+					break;
+			}
 		}
-		return $fields;
+		return array_unique($fields);
 	}
 
 	/**
@@ -107,10 +109,11 @@ class LightSQLParser {
 	private function _table($query){
 		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
 		$patterns = array(
-			'#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]*(LIMIT|WHERE|JOIN|GROUP BY|ORDER BY|OPTION|LEFT|INNER|RIGHT|OUTER|UNION|SET|HAVING|[\(]|[\)]|[\;])?[\S\s]*#i',
-			'#[\S\s]*UPDATE[\s]+([\w\_]+)[\s]*(SET|[\(]|[\)]|[\;])?[\S\s]*#i',
-			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]*(VALUES|SELECT|[\(]|[\)]|[\;])?[\S\s]*#i',
-			'#[\S\s]*TABLE[\s]+([\w\_]+)[\s]*(WHERE|ORDER BY|OPTION|[\(]|[\)]|[\;])?[\S\s]*#i'
+			'#[\S\s]+[\s]+JOIN[\s]+([\w\_]+)[\s]+(ON|AS|LIMIT|WHERE|JOIN|GROUP BY|ORDER BY|OPTION|LEFT|INNER|RIGHT|OUTER|UNION|SET|HAVING|[\(]|[\)]|[\;])?[\S\s]*#i',
+			'#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]+(AS|LIMIT|WHERE|JOIN|GROUP BY|ORDER BY|OPTION|LEFT|INNER|RIGHT|OUTER|UNION|SET|HAVING|[\(]|[\)]|[\;])?[\S\s]*#i',
+			'#[\S\s]*UPDATE[\s]+([\w\_]+)[\s]+(SET|[\(]|[\)]|[\;])?[\S\s]*#i',
+			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]+(VALUES|SELECT|[\(]|[\)]|[\;])?[\S\s]*#i',
+			'#[\S\s]*TABLE[\s]+([\w\_]+)[\s]+(WHERE|ORDER BY|OPTION|[\(]|[\)]|[\;])?[\S\s]*#i'
 		);
 		foreach($patterns as $pattern){
 			$table = preg_replace($pattern,'$1', $query);
@@ -126,6 +129,7 @@ class LightSQLParser {
 	private function _queries(){
 		$queries = preg_replace('#\/\*[\s\S]*?\*\/#','', $this->query);
 		$queries = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $queries);
+		$queries = preg_replace('#[\s]*UNION([\s]+ALL)?[\s]*#', ';', $queries);
 		$queries = explode(';', $queries);
 		return $queries;
 	}
