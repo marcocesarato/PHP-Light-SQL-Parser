@@ -85,7 +85,7 @@ class LightSQLParser {
 				}
 				break;
 			case 'UPDATE':
-				preg_match('#UPDATE[\s]+([\w\_]+([\s]+(AS[\s]+)?[\w\_]+)?[\s]*)SET([\S\s]*)[\s]+WHERE#i', $this->query, $matches);
+				preg_match('#UPDATE[\s]+([\w\_]+([\s]+(AS[\s]+)?[\w\_]+)?[\s]*)SET([\S\s]*)[\s]+(WHERE|[\;])?#i', $this->query, $matches);
 				if (!empty($matches[4])) {
 					$match = trim($matches[4]);
 					$match = explode(',', $match);
@@ -107,10 +107,10 @@ class LightSQLParser {
 	private function _table($query){
 		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
 		$patterns = array(
-			'#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]*(WHERE|JOIN|GROUP BY|ORDER BY|OPTION|LEFT|INNER|RIGHT|OUTER|UNION|SET|HAVING|[\(]|[\)])?[\S\s]*#i',
-			'#[\S\s]*UPDATE[\s]+([\w\_]+)[\s]*(SET|[\(]|[\)])?[\S\s]*#i',
-			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]*(VALUES|SELECT|[\(]|[\)])?[\S\s]*#i',
-			'#[\S\s]*TABLE[\s]+([\w\_]+)[\s]*(WHERE|ORDER BY|OPTION|[\(]|[\)])?[\S\s]*#i'
+			'#[\S\s]+[\s]+FROM[\s]+([\w\_]+)[\s]*(WHERE|JOIN|GROUP BY|ORDER BY|OPTION|LEFT|INNER|RIGHT|OUTER|UNION|SET|HAVING|[\(]|[\)]|[\;])?[\S\s]*#i',
+			'#[\S\s]*UPDATE[\s]+([\w\_]+)[\s]*(SET|[\(]|[\)]|[\;])?[\S\s]*#i',
+			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w\_]+)[\s]*(VALUES|SELECT|[\(]|[\)]|[\;])?[\S\s]*#i',
+			'#[\S\s]*TABLE[\s]+([\w\_]+)[\s]*(WHERE|ORDER BY|OPTION|[\(]|[\)]|[\;])?[\S\s]*#i'
 		);
 		foreach($patterns as $pattern){
 			$table = preg_replace($pattern,'$1', $query);
