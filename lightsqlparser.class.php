@@ -62,7 +62,7 @@ class LightSQLParser {
 		$fields = array();
 		$queries = $this->_queries();
 		foreach($queries as $query) {
-			$method = $this->method($method);
+			$method = $this->method($query);
 			switch ($method){
 				case 'SELECT':
 					preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $query, $matches);
