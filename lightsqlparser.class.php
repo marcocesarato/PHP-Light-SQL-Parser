@@ -10,8 +10,8 @@ class LightSQLParser {
 	public $query = '';
 
 	// Private
-	private static $connectors = array('ON','AS','LIMIT','WHERE','JOIN','GROUP BY','ORDER BY','OPTION','LEFT','INNER','RIGHT','OUTER','SET','HAVING','VALUES','SELECT','INTO','\(','\)');
-	private static $name_delimiters = array('ON', 'LIMIT','WHERE','JOIN','GROUP BY','ORDER BY','OPTION','LEFT','INNER','RIGHT','OUTER','SET','HAVING','VALUES','SELECT','INTO','\(','\)');
+	private static $connectors = array('ON','AS','LIMIT','WHERE','JOIN','GROUP BY','ORDER BY','OPTION','LEFT','INNER','RIGHT','OUTER','SET','HAVING','VALUES','SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE','ALTER','INTO','\(','\)');
+	private static $name_delimiters = array('ON', 'LIMIT','WHERE','JOIN','GROUP BY','ORDER BY','OPTION','LEFT','INNER','RIGHT','OUTER','SET','HAVING','VALUES','SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE','ALTER','INTO','\(','\)');
 
 	/**
 	 * Constructor
@@ -26,7 +26,7 @@ class LightSQLParser {
 	 * @return string
 	 */
 	public function method($query = null){
-		$methods = array('SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE', 'ALTER');
+		$methods = array('SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE','ALTER');
 		$queries = empty($query) ? $this->_queries() : array($query);
 		foreach($queries as $query){
 			foreach($methods as $method) {
