@@ -37,9 +37,9 @@ class LightSQLParser {
 	 * @return array
 	 */
 	public function tables(){
+		$tables = array();
 		$queries = $this->_queries();
 		foreach($queries as $query) {
-			$tables = array();
 			do {
 				$match = false;
 				$table = $this->_table($query);
