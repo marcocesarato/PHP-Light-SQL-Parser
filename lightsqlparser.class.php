@@ -8,9 +8,9 @@ class LightSQLParser {
 
 	// Public
 	public $query = '';
-
+	
 	// Private
-	private static $connectors = array('ON','AS','LIMIT','WHERE','JOIN','GROUP BY','ORDER BY','OPTION','LEFT','INNER','RIGHT','OUTER','SET','HAVING','VALUES','SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE','ALTER','INTO','\(','\)');
+	private static $connectors = array('ON','AS','LIMIT','WHERE','JOIN','GROUP BY','ORDER BY','OPTION','LEFT','INNER','RIGHT','OUTER','SET','HAVING','VALUES','SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE','ALTER','INTO','UNION','\(','\)','\;');
 
 	/**
 	 * Constructor
