@@ -90,7 +90,7 @@ class LightSQLParser {
 					$match = trim($matches[4]);
 					$match = explode(',', $match);
 					foreach ($match as $field) {
-						$field = preg_replace('#([\s]+(\=[\s]+)?[\S\s]+)#i', '', trim($field));
+						$field = preg_replace('#([\s]*\=[\s]*[\S\s]+)#i', '', trim($field));
 						$fields[] = $field;
 					}
 				}
