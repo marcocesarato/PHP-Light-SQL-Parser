@@ -69,7 +69,7 @@ class LightSQLParser
 				$table = $this->_table($query);
 				if (!empty($table)) {
 					$tables[] = $table;
-					$query = preg_replace('#(' . $table . '([\s]+(?!' . $connectors . ')(?:(?<=["\'])|(?=["\']))(AS[\s]+)?[\w]+)?[\s]*(,?))#i', '', $query);
+					$query = preg_replace('#(' . $table . '([\s]+(?!' . $connectors . ')(AS[\s]+)?[\w]+)?[\s]*(,?))#i', '', $query);
 					$match = true;
 				}
 			} while ($match);
@@ -135,11 +135,11 @@ class LightSQLParser
 		$query = preg_replace('#\/\*[\S\s]*?\*\/#', '', $query);
 		$connectors = implode('|', self::$connectors);
 		$patterns = array(
-			'#[\S\s]*INSERT[\s]+INTO[\s]+(?!' . $connectors . ')(?:(?<=["\'])|(?=["\']))([\w]+)([\s]+(' . $connectors . ')(?:(?<=["\'])|(?=["\'])))?[\S\s]*#i',
-			'#[\S\s]*UPDATE[\s]+(?!' . $connectors . ')(?:(?<=["\'])|(?=["\']))([\w]+)([\s]+(' . $connectors . ')(?:(?<=["\'])|(?=["\'])))?[\S\s]*#i',
-			'#[\S\s]+[\s]+JOIN[\s]+(?!' . $connectors . ')(?:(?<=["\'])|(?=["\']))([\w]+)([\s]+(' . $connectors . ')(?:(?<=["\'])|(?=["\'])))?[\S\s]*#i',
-			'#[\S\s]+[\s]+FROM[\s]+(?!' . $connectors . ')(?:(?<=["\'])|(?=["\']))([\w]+)([\s]+(' . $connectors . ')(?:(?<=["\'])|(?=["\'])))?[\S\s]*#i',
-			'#[\S\s]*TABLE[\s]+(?!' . $connectors . ')(?:(?<=["\'])|(?=["\']))([\w]+)([\s]+(' . $connectors . ')(?:(?<=["\'])|(?=["\'])))?[\S\s]*#i'
+			'#[\S\s]*INSERT[\s]+INTO[\s]+(?!' . $connectors . ')([\w]+)([\s]+(' . $connectors . '))?[\S\s]*#i',
+			'#[\S\s]*UPDATE[\s]+(?!' . $connectors . ')([\w]+)([\s]+(' . $connectors . '))?[\S\s]*#i',
+			'#[\S\s]+[\s]+JOIN[\s]+(?!' . $connectors . ')([\w]+)([\s]+(' . $connectors . '))?[\S\s]*#i',
+			'#[\S\s]+[\s]+FROM[\s]+(?!' . $connectors . ')([\w]+)([\s]+(' . $connectors . '))?[\S\s]*#i',
+			'#[\S\s]*TABLE[\s]+(?!' . $connectors . ')([\w]+)([\s]+(' . $connectors . '))?[\S\s]*#i'
 		);
 		foreach ($patterns as $pattern) {
 			$table = preg_replace($pattern, '$1', $query);
