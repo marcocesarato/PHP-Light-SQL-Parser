@@ -130,7 +130,7 @@ class LightSQLParser {
 	private function _queries(){
 		$queries = preg_replace('#\/\*[\s\S]*?\*\/#','', $this->query);
 		$queries = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $queries);
-		$queries = preg_replace('#[\s]*UNION([\s]+ALL)?[\s]*#', ';', $queries);
+		$queries = preg_replace('#[\s]+UNION([\s]+ALL)?[\s]*#i', ';', $queries);
 		$queries = explode(';', $queries);
 		return $queries;
 	}
