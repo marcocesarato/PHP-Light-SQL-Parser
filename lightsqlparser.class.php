@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2018
  * @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://gist.github.com/marcocesarato/b4dccc2df9ac1447d2676c0ae96c6994
- * @version 0.1.68
+ * @version 0.1.69
  */
 
 class LightSQLParser {
@@ -20,7 +20,7 @@ class LightSQLParser {
 	/**
 	 * Constructor
 	 */
-	public function __construct($query) {
+	public function __construct($query = '') {
 
 		$this->query = $query;
 
