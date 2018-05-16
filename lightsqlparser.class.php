@@ -1,11 +1,10 @@
-<?php
 /**
  * Light SQL Parser Class
  * @author Marco Cesarato <cesarato.developer@gmail.com>
  * @copyright Copyright (c) 2018
  * @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://gist.github.com/marcocesarato/b4dccc2df9ac1447d2676c0ae96c6994
- * @version 0.1.65
+ * @version 0.1.67
  */
 
 class LightSQLParser {
@@ -21,8 +20,12 @@ class LightSQLParser {
 	 * Constructor
 	 */
 	public function __construct($query) {
+
 		$this->query = $query;
-		self::$connectors_imploded = implode('|', self::$connectors);
+
+		if(empty(self::$connectors_imploded))
+			self::$connectors_imploded = implode('|', self::$connectors);
+
 		return $this;
 	}
 
