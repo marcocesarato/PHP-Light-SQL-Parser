@@ -4,21 +4,29 @@
  * @author Marco Cesarato <cesarato.developer@gmail.com>
  */
 class LightSQLParser {
-
+	
 	// Public
 	public $query = '';
-
+	
 	// Private
 	private static $connectors = array('AS', 'OR', 'AND', 'ON', 'LIMIT', 'WHERE', 'JOIN', 'GROUP', 'ORDER', 'OPTION', 'LEFT', 'INNER', 'RIGHT', 'OUTER', 'SET', 'HAVING', 'VALUES', 'SELECT', '\(', '\)');
 	private static $connectors_imploded = 'AS|OR|AND|ON|LIMIT|WHERE|JOIN|GROUP|ORDER|OPTION|LEFT|INNER|RIGHT|OUTER|SET|HAVING|VALUES|SELECT|\(|\)';
-
+	
 	/**
 	 * Constructor
 	 */
 	public function __construct($query) {
 		$this->query = $query;
+		return $this;
 	}
 
+	/**
+	 * Set SQL Query string
+	 */
+	public function setQuery($query) {
+		$this->query = $query;
+		return $this;
+ 	}
 	/**
 	 * Get SQL Query method
 	 * @param $query
@@ -37,7 +45,6 @@ class LightSQLParser {
 		}
 		return '';
 	}
-
 	/**
 	 * Get SQL Query Tables
 	 * @param $query
@@ -53,14 +60,13 @@ class LightSQLParser {
 				$table = $this->_table($query);
 				if (!empty($table)) {
 					$tables[] = $table;
-					$query = preg_replace('#(' . $table . '([\s]+(?!'.$connectors.')(AS[\s]+)?[\w]+)?[\s]*(,?))#i', '', $query);
+					$query = preg_replace('#(((JOIN|TABLE)[\s]+)?' . $table . '(([\s]+(AS[\s]+)?(?!'.$connectors.')[\w]+)([\s]*[,])?)?)#i', '', $query);
 					$match = true;
 				}
 			} while ($match);
 		}
 		return array_unique($tables);
 	}
-
 	/**
 	 * Get Query fields (at the moment only SELECT/INSERT/UPDATE)
 	 * @param $query
@@ -109,16 +115,6 @@ class LightSQLParser {
 		}
 		return array_unique($fields);
 	}
-
-	/**
-	 * Get SQL Query First Table
-	 * @param $query
-	 * @return string
-	 */
-	public function maintable(){
-		return $this->_table($this->query);
-	}
-
 	/**
 	 * Get SQL Query First Table
 	 * @param $query
@@ -135,11 +131,10 @@ class LightSQLParser {
 		);
 		foreach($patterns as $pattern){
 			$table = preg_replace($pattern,'$1', $query);
-			if(!empty(trim($table)) && !in_array($table, self::$connectors) && $table != $query) return trim($table);
+			if(!empty(trim($table)) && !in_array(strtoupper($table), self::$connectors) && $table != $query) return trim($table);
 		}
 		return '';
 	}
-
 	/**
 	 * Get all queries
 	 * @return array
