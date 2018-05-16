@@ -2,21 +2,27 @@
 /**
  * Light SQL Parser Class
  * @author Marco Cesarato <cesarato.developer@gmail.com>
+ * @copyright Copyright (c) 2018
+ * @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
+ * @link https://gist.github.com/marcocesarato/b4dccc2df9ac1447d2676c0ae96c6994
+ * @version 0.1.65
  */
+
 class LightSQLParser {
-	
+
 	// Public
 	public $query = '';
-	
+
 	// Private
-	private static $connectors = array('AS', 'OR', 'AND', 'ON', 'LIMIT', 'WHERE', 'JOIN', 'GROUP', 'ORDER', 'OPTION', 'LEFT', 'INNER', 'RIGHT', 'OUTER', 'SET', 'HAVING', 'VALUES', 'SELECT', '\(', '\)');
-	private static $connectors_imploded = 'AS|OR|AND|ON|LIMIT|WHERE|JOIN|GROUP|ORDER|OPTION|LEFT|INNER|RIGHT|OUTER|SET|HAVING|VALUES|SELECT|\(|\)';
-	
+	protected static $connectors = array('AS', 'OR', 'AND', 'ON', 'LIMIT', 'WHERE', 'JOIN', 'GROUP', 'ORDER', 'OPTION', 'LEFT', 'INNER', 'RIGHT', 'OUTER', 'SET', 'HAVING', 'VALUES', 'SELECT', '\(', '\)');
+	protected static $connectors_imploded = '';
+
 	/**
 	 * Constructor
 	 */
 	public function __construct($query) {
 		$this->query = $query;
+		self::$connectors_imploded = implode('|', self::$connectors);
 		return $this;
 	}
 
@@ -26,7 +32,8 @@ class LightSQLParser {
 	public function setQuery($query) {
 		$this->query = $query;
 		return $this;
- 	}
+	}
+
 	/**
 	 * Get SQL Query method
 	 * @param $query
@@ -45,6 +52,7 @@ class LightSQLParser {
 		}
 		return '';
 	}
+
 	/**
 	 * Get SQL Query Tables
 	 * @param $query
@@ -67,6 +75,7 @@ class LightSQLParser {
 		}
 		return array_unique($tables);
 	}
+
 	/**
 	 * Get Query fields (at the moment only SELECT/INSERT/UPDATE)
 	 * @param $query
@@ -115,18 +124,28 @@ class LightSQLParser {
 		}
 		return array_unique($fields);
 	}
+
 	/**
 	 * Get SQL Query First Table
 	 * @param $query
 	 * @return string
 	 */
-	private function _table($query){
+	public function table(){
+		return $this->_table($this->query);
+	}
+
+	/**
+	 * Get SQL Query First Table
+	 * @param $query
+	 * @return string
+	 */
+	protected function _table($query){
 		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
 		$patterns = array(
+			'#[\S\s]+[\s]+FROM[\s]+([\w]+)[\S\s]*#i',
 			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w]+)[\S\s]*#i',
 			'#[\S\s]*UPDATE[\s]+([\w]+)[\S\s]*#i',
 			'#[\S\s]+[\s]+JOIN[\s]+([\w]+)[\S\s]*#i',
-			'#[\S\s]+[\s]+FROM[\s]+([\w]+)[\S\s]*#i',
 			'#[\S\s]*TABLE[\s]+([\w]+)[\S\s]*#i'
 		);
 		foreach($patterns as $pattern){
@@ -135,11 +154,12 @@ class LightSQLParser {
 		}
 		return '';
 	}
+
 	/**
 	 * Get all queries
 	 * @return array
 	 */
-	private function _queries(){
+	protected function _queries(){
 		$queries = preg_replace('#\/\*[\s\S]*?\*\/#','', $this->query);
 		$queries = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $queries);
 		$queries = preg_replace('#[\s]*UNION([\s]+ALL)?[\s]*#', ';', $queries);
