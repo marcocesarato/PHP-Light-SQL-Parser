@@ -1,32 +1,21 @@
-<?php
 /**
  * Light SQL Parser Class
  * @author Marco Cesarato <cesarato.developer@gmail.com>
  */
-
-class LightSQLParser
-{
+class LightSQLParser {
 
 	// Public
 	public $query = '';
 
 	// Private
 	private static $connectors = array('AS', 'OR', 'AND', 'ON', 'LIMIT', 'WHERE', 'JOIN', 'GROUP', 'ORDER', 'OPTION', 'LEFT', 'INNER', 'RIGHT', 'OUTER', 'SET', 'HAVING', 'VALUES', 'SELECT', '\(', '\)');
+	private static $connectors_imploded = 'AS|OR|AND|ON|LIMIT|WHERE|JOIN|GROUP|ORDER|OPTION|LEFT|INNER|RIGHT|OUTER|SET|HAVING|VALUES|SELECT|\(|\)';
 
 	/**
 	 * Constructor
 	 */
 	public function __construct($query) {
 		$this->query = $query;
-		return $this;
-	}
-
-	/**
-	 * Set SQL Query string
-	 */
-	public function setQuery($query) {
-		$this->query = $query;
-		return $this;
 	}
 
 	/**
@@ -34,13 +23,13 @@ class LightSQLParser
 	 * @param $query
 	 * @return string
 	 */
-	public function method($query = null) {
-		$methods = array('SELECT', 'INSERT', 'UPDATE', 'DELETE', 'RENAME', 'REPLACE', 'SHOW', 'SET', 'DROP', 'CREATE INDEX', 'CREATE TABLE', 'EXPLAIN', 'DESCRIBE', 'TRUNCATE', 'ALTER');
+	public function method($query = null){
+		$methods = array('SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE','ALTER');
 		$queries = empty($query) ? $this->_queries() : array($query);
-		foreach ($queries as $query) {
-			foreach ($methods as $method) {
+		foreach($queries as $query){
+			foreach($methods as $method) {
 				$_method = str_replace(' ', '[\s]+', $method);
-				if (preg_match('#^[\s]*' . $_method . '[\s]+#i', $query)) {
+				if(preg_match('#^[\s]*'.$_method.'[\s]+#i', $query)){
 					return $method;
 				}
 			}
@@ -53,23 +42,17 @@ class LightSQLParser
 	 * @param $query
 	 * @return array
 	 */
-	public function tables() {
+	public function tables(){
 		$tables = array();
 		$queries = $this->_queries();
-
-		$connectors = self::$connectors;
-		if (($key = array_search('AS', $connectors)) !== false) {
-			unset($connectors[$key]);
-		}
-		$connectors = implode('|', $connectors);
-
-		foreach ($queries as $query) {
+		$connectors = str_replace('AS|','', self::$connectors_imploded);
+		foreach($queries as $query) {
 			do {
 				$match = false;
 				$table = $this->_table($query);
 				if (!empty($table)) {
 					$tables[] = $table;
-					$query = preg_replace('#(' . $table . '([\s]+(?!' . $connectors . ')(AS[\s]+)?[\w]+)?[\s]*(,?))#i', '', $query);
+					$query = preg_replace('#(' . $table . '([\s]+(?!'.$connectors.')(AS[\s]+)?[\w]+)?[\s]*(,?))#i', '', $query);
 					$match = true;
 				}
 			} while ($match);
@@ -82,12 +65,12 @@ class LightSQLParser
 	 * @param $query
 	 * @return array
 	 */
-	public function fields() {
+	public function fields(){
 		$fields = array();
 		$queries = $this->_queries();
-		foreach ($queries as $query) {
+		foreach($queries as $query) {
 			$method = $this->method($query);
-			switch ($method) {
+			switch ($method){
 				case 'SELECT':
 					preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $query, $matches);
 					if (!empty($matches[1])) {
@@ -131,19 +114,27 @@ class LightSQLParser
 	 * @param $query
 	 * @return string
 	 */
-	private function _table($query) {
-		$query = preg_replace('#\/\*[\S\s]*?\*\/#', '', $query);
-		$connectors = implode('|', self::$connectors);
+	public function maintable(){
+		return $this->_table($this->query);
+	}
+
+	/**
+	 * Get SQL Query First Table
+	 * @param $query
+	 * @return string
+	 */
+	private function _table($query){
+		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
 		$patterns = array(
-			'#[\S\s]*INSERT[\s]+INTO[\s]+(?!' . $connectors . ')([\w]+)([\s]+(' . $connectors . '))?[\S\s]*#i',
-			'#[\S\s]*UPDATE[\s]+(?!' . $connectors . ')([\w]+)([\s]+(' . $connectors . '))?[\S\s]*#i',
-			'#[\S\s]+[\s]+JOIN[\s]+(?!' . $connectors . ')([\w]+)([\s]+(' . $connectors . '))?[\S\s]*#i',
-			'#[\S\s]+[\s]+FROM[\s]+(?!' . $connectors . ')([\w]+)([\s]+(' . $connectors . '))?[\S\s]*#i',
-			'#[\S\s]*TABLE[\s]+(?!' . $connectors . ')([\w]+)([\s]+(' . $connectors . '))?[\S\s]*#i'
+			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w]+)([\s]+('.self::$connectors_imploded.'))?[\S\s]*#i',
+			'#[\S\s]*UPDATE[\s]+([\w]+)([\s]+('.self::$connectors_imploded.'))?[\S\s]*#i',
+			'#[\S\s]+[\s]+JOIN[\s]+([\w]+)([\s]+('.self::$connectors_imploded.'))?[\S\s]*#i',
+			'#[\S\s]+[\s]+FROM[\s]+([\w]+)([\s]+('.self::$connectors_imploded.'))?[\S\s]*#i',
+			'#[\S\s]*TABLE[\s]+([\w]+)([\s]+('.self::$connectors_imploded.'))?[\S\s]*#i'
 		);
-		foreach ($patterns as $pattern) {
-			$table = preg_replace($pattern, '$1', $query);
-			if (!empty(trim($table)) && $table != $query) return trim($table);
+		foreach($patterns as $pattern){
+			$table = preg_replace($pattern,'$1', $query);
+			if(!empty(trim($table)) && !in_array($table, self::$connectors) && $table != $query) return trim($table);
 		}
 		return '';
 	}
@@ -152,9 +143,9 @@ class LightSQLParser
 	 * Get all queries
 	 * @return array
 	 */
-	private function _queries() {
-		$queries = preg_replace('#\/\*[\s\S]*?\*\/#', '', $this->query);
-		$queries = preg_replace('#;(?:(?<=["\'])|(?=["\']))#', '', $queries);
+	private function _queries(){
+		$queries = preg_replace('#\/\*[\s\S]*?\*\/#','', $this->query);
+		$queries = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $queries);
 		$queries = preg_replace('#[\s]*UNION([\s]+ALL)?[\s]*#', ';', $queries);
 		$queries = explode(';', $queries);
 		return $queries;
