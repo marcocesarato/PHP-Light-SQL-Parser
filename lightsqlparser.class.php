@@ -127,11 +127,11 @@ class LightSQLParser {
 	private function _table($query){
 		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
 		$patterns = array(
-			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w]+)([\s]+('.self::$connectors_imploded.'))?[\S\s]*#i',
-			'#[\S\s]*UPDATE[\s]+([\w]+)([\s]+('.self::$connectors_imploded.'))?[\S\s]*#i',
-			'#[\S\s]+[\s]+JOIN[\s]+([\w]+)([\s]+('.self::$connectors_imploded.'))?[\S\s]*#i',
-			'#[\S\s]+[\s]+FROM[\s]+([\w]+)([\s]+('.self::$connectors_imploded.'))?[\S\s]*#i',
-			'#[\S\s]*TABLE[\s]+([\w]+)([\s]+('.self::$connectors_imploded.'))?[\S\s]*#i'
+			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w]+)[\S\s]*#i',
+			'#[\S\s]*UPDATE[\s]+([\w]+)[\S\s]*#i',
+			'#[\S\s]+[\s]+JOIN[\s]+([\w]+)[\S\s]*#i',
+			'#[\S\s]+[\s]+FROM[\s]+([\w]+)[\S\s]*#i',
+			'#[\S\s]*TABLE[\s]+([\w]+)[\S\s]*#i'
 		);
 		foreach($patterns as $pattern){
 			$table = preg_replace($pattern,'$1', $query);
