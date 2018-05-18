@@ -141,28 +141,8 @@ class LightSQLParser {
 	 * @return string
 	 */
 	public function table(){
-		return $this->_table($this->query);
-	}
-
-	/**
-	 * Get SQL Query First Table
-	 * @param $query
-	 * @return string
-	 */
-	protected function _table($query){
-		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
-		$patterns = array(
-			'#[\S\s]+[\s]+FROM[\s]+([\w]+)[\S\s]*#i',
-			'#[\S\s]*INSERT[\s]+INTO[\s]+([\w]+)[\S\s]*#i',
-			'#[\S\s]*UPDATE[\s]+([\w]+)[\S\s]*#i',
-			'#[\S\s]+[\s]+JOIN[\s]+([\w]+)[\S\s]*#i',
-			'#[\S\s]*TABLE[\s]+([\w]+)[\S\s]*#i'
-		);
-		foreach($patterns as $pattern){
-			$table = preg_replace($pattern,'$1', $query);
-			if(!empty(trim($table)) && !in_array(strtoupper($table), self::$connectors) && $table != $query) return trim($table);
-		}
-		return '';
+		$tables = $this->tables($this->query);
+		return $tables[0];
 	}
 
 	/**
