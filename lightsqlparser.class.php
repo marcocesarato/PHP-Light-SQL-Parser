@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2018
  * @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://gist.github.com/marcocesarato/b4dccc2df9ac1447d2676c0ae96c6994
- * @version 0.1.69
+ * @version 0.1.72
  */
 
 class LightSQLParser {
@@ -55,35 +55,6 @@ class LightSQLParser {
 			}
 		}
 		return '';
-	}
-
-	/**
-	 * Get SQL Query Tables
-	 * @param $query
-	 * @return array
-	 */
-	function tables($query){
-		$results = array();
-		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
-		$connectors = self::$connectors_imploded;
-		$patterns = array(
-			'#[\s]+FROM[\s]+(([\s]*(?!'.$connectors.')[\w\.]+([\s]+(AS[\s]+)?(?!'.$connectors.')[\w\.]+)?[\s]*[,]?)+)#i',
-			'#[\s]*INSERT[\s]+INTO[\s]+([\w]+)#i',
-			'#[\s]*UPDATE[\s]+([\w]+)#i',
-			'#[\s]+[\s]+JOIN[\s]+([\w]+)#i',
-			'#[\s]+TABLE[\s]+([\w]+)#i'
-		);
-		foreach($patterns as $pattern){
-			preg_match_all($pattern,$query, $matches, PREG_SET_ORDER);
-			foreach ($matches as $val) {
-				$tables = explode(',', $val[1]);
-				foreach ($tables as $table) {
-					$table = trim(preg_replace('#[\s]+(AS[\s]+)[\w\.]+#i', '', $table));
-					$results[] = $table;
-				}
-			}
-		}
-		return array_unique($results);
 	}
 
 	/**
@@ -143,6 +114,35 @@ class LightSQLParser {
 	public function table(){
 		$tables = $this->tables($this->query);
 		return $tables[0];
+	}
+
+
+	/**
+	 * Get SQL Query Tables
+	 * @param $query
+	 * @return array
+	 */
+	function tables($query){
+		$results = array();
+		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
+		$patterns = array(
+			'#[\s]+FROM[\s]+(([\s]*(?!'.self::$connectors_imploded.')[\w\.]+([\s]+(AS[\s]+)?(?!'.self::$connectors_imploded.')[\w\.]+)?[\s]*[,]?)+)#i',
+			'#[\s]*INSERT[\s]+INTO[\s]+([\w]+)#i',
+			'#[\s]*UPDATE[\s]+([\w]+)#i',
+			'#[\s]+[\s]+JOIN[\s]+([\w]+)#i',
+			'#[\s]+TABLE[\s]+([\w]+)#i'
+		);
+		foreach($patterns as $pattern){
+			preg_match_all($pattern,$query, $matches, PREG_SET_ORDER);
+			foreach ($matches as $val) {
+				$tables = explode(',', $val[1]);
+				foreach ($tables as $table) {
+					$table = trim(preg_replace('#[\s]+(AS[\s]+)[\w\.]+#i', '', $table));
+					$results[] = $table;
+				}
+			}
+		}
+		return array_unique($results);
 	}
 
 	/**
