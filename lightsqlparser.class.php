@@ -113,7 +113,7 @@ class LightSQLParser {
 		$queries = $this->_queries();
 			foreach($queries as $query) {
 			$patterns = array(
-				'#[\s]+FROM[\s]+(([\s]*(?!'.self::$connectors_imploded.')[\w\.]+([\s]+(AS[\s]+)?(?!'.self::$connectors_imploded.')[\w\.]+)?[\s]*[,]?)+)#i',
+				'#[\s]+FROM[\s]+(([\s]*(?!'.self::$connectors_imploded.')[\w]+([\s]+(AS[\s]+)?(?!'.self::$connectors_imploded.')[\w]+)?[\s]*[,]?)+)#i',
 				'#[\s]*INSERT[\s]+INTO[\s]+([\w]+)#i',
 				'#[\s]*UPDATE[\s]+([\w]+)#i',
 				'#[\s]+[\s]+JOIN[\s]+([\w]+)#i',
