@@ -62,22 +62,28 @@ class LightSQLParser {
 	 * @param $query
 	 * @return array
 	 */
-	public function tables(){
-		$tables = array();
-		$queries = $this->_queries();
+	function tables($query){
+		$results = array();
+		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
 		$connectors = str_replace('AS|','', self::$connectors_imploded);
-		foreach($queries as $query) {
-			do {
-				$match = false;
-				$table = $this->_table($query);
-				if (!empty($table)) {
-					$tables[] = $table;
-					$query = preg_replace('#(((JOIN|TABLE)[\s]+)?' . $table . '(([\s]+(AS[\s]+)?(?!'.$connectors.')[\w]+)([\s]*[,])?)?)#i', '', $query);
-					$match = true;
+		$patterns = array(
+			'#[\s]+FROM[\s]+(([\s]*(?!'.$connectors.')[\w\.]+([\s]+(AS[\s]+)?(?!'.$connectors.')[\w\.]+)?[\s]*[,]?)+)#i',
+			'#[\s]*INSERT[\s]+INTO[\s]+([\w]+)#i',
+			'#[\s]*UPDATE[\s]+([\w]+)#i',
+			'#[\s]+[\s]+JOIN[\s]+([\w]+)#i',
+			'#[\s]+TABLE[\s]+([\w]+)#i'
+		);
+		foreach($patterns as $pattern){
+			preg_match_all($pattern,$query, $matches, PREG_SET_ORDER);
+			foreach ($matches as $val) {
+				$tables = explode(',', $val[1]);
+				foreach ($tables as $table) {
+					$table = trim(preg_replace('#[\s]+(AS[\s]+)[\w\.]+#i', '', $table));
+					$results[] = $table;
 				}
-			} while ($match);
+			}
 		}
-		return array_unique($tables);
+		return array_unique($results);
 	}
 
 	/**
