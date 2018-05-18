@@ -5,31 +5,23 @@
  * @copyright Copyright (c) 2018
  * @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://gist.github.com/marcocesarato/b4dccc2df9ac1447d2676c0ae96c6994
- * @version 0.1.72
+ * @version 0.1.74
  */
-
 class LightSQLParser {
-
 	// Public
 	public $query = '';
-
 	// Private
 	protected static $connectors = array('OR', 'AND', 'ON', 'LIMIT', 'WHERE', 'JOIN', 'GROUP', 'ORDER', 'OPTION', 'LEFT', 'INNER', 'RIGHT', 'OUTER', 'SET', 'HAVING', 'VALUES', 'SELECT', '\(', '\)');
 	protected static $connectors_imploded = '';
-
 	/**
 	 * Constructor
 	 */
 	public function __construct($query = '') {
-
 		$this->query = $query;
-
 		if(empty(self::$connectors_imploded))
 			self::$connectors_imploded = implode('|', self::$connectors);
-
 		return $this;
 	}
-
 	/**
 	 * Set SQL Query string
 	 */
@@ -37,7 +29,6 @@ class LightSQLParser {
 		$this->query = $query;
 		return $this;
 	}
-
 	/**
 	 * Get SQL Query method
 	 * @param $query
@@ -56,7 +47,6 @@ class LightSQLParser {
 		}
 		return '';
 	}
-
 	/**
 	 * Get Query fields (at the moment only SELECT/INSERT/UPDATE)
 	 * @param $query
@@ -105,46 +95,43 @@ class LightSQLParser {
 		}
 		return array_unique($fields);
 	}
-
 	/**
 	 * Get SQL Query First Table
 	 * @param $query
 	 * @return string
 	 */
 	public function table(){
-		$tables = $this->tables($this->query);
+		$tables = $this->tables();
 		return $tables[0];
 	}
-
-
 	/**
 	 * Get SQL Query Tables
-	 * @param $query
 	 * @return array
 	 */
-	function tables($query){
+	function tables(){
 		$results = array();
-		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
-		$patterns = array(
-			'#[\s]+FROM[\s]+(([\s]*(?!'.self::$connectors_imploded.')[\w\.]+([\s]+(AS[\s]+)?(?!'.self::$connectors_imploded.')[\w\.]+)?[\s]*[,]?)+)#i',
-			'#[\s]*INSERT[\s]+INTO[\s]+([\w]+)#i',
-			'#[\s]*UPDATE[\s]+([\w]+)#i',
-			'#[\s]+[\s]+JOIN[\s]+([\w]+)#i',
-			'#[\s]+TABLE[\s]+([\w]+)#i'
-		);
-		foreach($patterns as $pattern){
-			preg_match_all($pattern,$query, $matches, PREG_SET_ORDER);
-			foreach ($matches as $val) {
-				$tables = explode(',', $val[1]);
-				foreach ($tables as $table) {
-					$table = trim(preg_replace('#[\s]+(AS[\s]+)[\w\.]+#i', '', $table));
-					$results[] = $table;
+		$queries = $this->_queries();
+			foreach($queries as $query) {
+			$patterns = array(
+				'#[\s]+FROM[\s]+(([\s]*(?!'.self::$connectors_imploded.')[\w\.]+([\s]+(AS[\s]+)?(?!'.self::$connectors_imploded.')[\w\.]+)?[\s]*[,]?)+)#i',
+				'#[\s]*INSERT[\s]+INTO[\s]+([\w]+)#i',
+				'#[\s]*UPDATE[\s]+([\w]+)#i',
+				'#[\s]+[\s]+JOIN[\s]+([\w]+)#i',
+				'#[\s]+TABLE[\s]+([\w]+)#i'
+			);
+			foreach($patterns as $pattern){
+				preg_match_all($pattern,$query, $matches, PREG_SET_ORDER);
+				foreach ($matches as $val) {
+					$tables = explode(',', $val[1]);
+					foreach ($tables as $table) {
+						$table = trim(preg_replace('#[\s]+(AS[\s]+)[\w\.]+#i', '', $table));
+						$results[] = $table;
+					}
 				}
 			}
 		}
 		return array_unique($results);
 	}
-
 	/**
 	 * Get all queries
 	 * @return array
