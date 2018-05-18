@@ -14,7 +14,7 @@ class LightSQLParser {
 	public $query = '';
 
 	// Private
-	protected static $connectors = array('AS', 'OR', 'AND', 'ON', 'LIMIT', 'WHERE', 'JOIN', 'GROUP', 'ORDER', 'OPTION', 'LEFT', 'INNER', 'RIGHT', 'OUTER', 'SET', 'HAVING', 'VALUES', 'SELECT', '\(', '\)');
+	protected static $connectors = array('OR', 'AND', 'ON', 'LIMIT', 'WHERE', 'JOIN', 'GROUP', 'ORDER', 'OPTION', 'LEFT', 'INNER', 'RIGHT', 'OUTER', 'SET', 'HAVING', 'VALUES', 'SELECT', '\(', '\)');
 	protected static $connectors_imploded = '';
 
 	/**
@@ -65,7 +65,7 @@ class LightSQLParser {
 	function tables($query){
 		$results = array();
 		$query = preg_replace('#\/\*[\S\s]*?\*\/#','', $query);
-		$connectors = str_replace('AS|','', self::$connectors_imploded);
+		$connectors = self::$connectors_imploded;
 		$patterns = array(
 			'#[\s]+FROM[\s]+(([\s]*(?!'.$connectors.')[\w\.]+([\s]+(AS[\s]+)?(?!'.$connectors.')[\w\.]+)?[\s]*[,]?)+)#i',
 			'#[\s]*INSERT[\s]+INTO[\s]+([\w]+)#i',
