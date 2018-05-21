@@ -91,6 +91,19 @@ class LightSQLParser {
 						}
 					}
 					break;
+				case 'CREATE TABLE':
+					preg_match('#CREATE[\s]+TABLE[\s]+\w+[\s]+\(([\S\s]*)\)#i', $query, $matches);
+					if (!empty($matches[1])) {
+						$match = trim($matches[1]);
+						$match = explode(',', $match);
+						foreach ($match as $_field) {
+							preg_match('#^w+#', trim($_field), $field);
+							if (!empty($field[0])) {
+								$fields[] = $field[0];
+							}
+						}
+					}
+					break;
 			}
 		}
 		return array_unique($fields);
