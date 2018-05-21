@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2018
  * @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://gist.github.com/marcocesarato/b4dccc2df9ac1447d2676c0ae96c6994
- * @version 0.1.76
+ * @version 0.1.78
  */
 class LightSQLParser {
 	// Public
