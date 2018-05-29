@@ -3,9 +3,9 @@
  * Light SQL Parser Class
  * @author Marco Cesarato <cesarato.developer@gmail.com>
  * @copyright Copyright (c) 2018
- * @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
+ * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://gist.github.com/marcocesarato/b4dccc2df9ac1447d2676c0ae96c6994
- * @version 0.1.81
+ * @version 0.1.82
  */
 class LightSQLParser {
 	// Public
@@ -78,6 +78,16 @@ class LightSQLParser {
 							$field = preg_replace('#([\s]+(AS[\s]+)?[\w\.]+)#i', '', trim($field));
 							$fields[] = $field;
 						}
+					} else {
+						preg_match('#INSERT[\s]+INTO[\s]+([\w\.]+([\s]+(AS[\s]+)?[\w\.]+)?[\s]*)SET([\S\s]*)([\;])?#i', $query, $matches);
+						if (!empty($matches[4])) {
+							$match = trim($matches[4]);
+							$match = explode(',', $match);
+							foreach ($match as $field) {
+								$field = preg_replace('#([\s]*\=[\s]*[\S\s]+)#i', '', trim($field));
+								$fields[] = $field;
+							}
+						}
 					}
 					break;
 				case 'UPDATE':
@@ -124,7 +134,7 @@ class LightSQLParser {
 	function tables(){
 		$results = array();
 		$queries = $this->_queries();
-			foreach($queries as $query) {
+		foreach($queries as $query) {
 			$patterns = array(
 				'#[\s]+FROM[\s]+(([\s]*(?!'.self::$connectors_imploded.')[\w]+([\s]+(AS[\s]+)?(?!'.self::$connectors_imploded.')[\w]+)?[\s]*[,]?)+)#i',
 				'#[\s]*INSERT[\s]+INTO[\s]+([\w]+)#i',
