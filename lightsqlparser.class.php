@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2018
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://gist.github.com/marcocesarato/b4dccc2df9ac1447d2676c0ae96c6994
- * @version 0.1.82
+ * @version 0.1.83
  */
 class LightSQLParser {
 	// Public
@@ -91,7 +91,7 @@ class LightSQLParser {
 					}
 					break;
 				case 'UPDATE':
-					preg_match('#UPDATE[\s]+([\w\.]+([\s]+(AS[\s]+)?[\w\.]+)?[\s]*)SET([\S\s]*)[\s]+(WHERE|[\;])?#i', $query, $matches);
+					preg_match('#UPDATE[\s]+([\w\.]+([\s]+(AS[\s]+)?[\w\.]+)?[\s]*)SET([\S\s]*)([\s]+WHERE|[\;])?#i', $query, $matches);
 					if (!empty($matches[4])) {
 						$match = trim($matches[4]);
 						$match = explode(',', $match);
