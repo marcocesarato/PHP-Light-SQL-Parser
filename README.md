@@ -1,5 +1,11 @@
 # PHP Light SQL Parser Class
 
+Version 0.1
+
+Github: https://github.com/marcocesarato/PHP-Light-SQL-Parser-Class
+
+## Description
+
 This class can parse SQL to get query type, tables, field values, etc..
 
 It takes an string with a SQL statements and parses it to extract its different components.
