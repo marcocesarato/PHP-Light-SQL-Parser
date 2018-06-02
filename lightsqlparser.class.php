@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2018
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://github.com/marcocesarato/PHP-Light-SQL-Parser-Class
- * @version 0.1.86
+ * @version 0.1.87
  */
 class LightSQLParser {
 	// Public
@@ -119,13 +119,13 @@ class LightSQLParser {
 		return array_unique($fields);
 	}
 	/**
-	 * Get SQL Query First Table
-	 * @param $query
-	 * @return string
-	 */
+	* Get SQL Query First Table
+	* @param $query
+	* @return string
+	*/
 	public function table(){
-		$tables = $this->tables();
-		return $tables[0];
+	$tables = $this->tables();
+	return (isset($tables[0])) ? $tables[0] : null;
 	}
 	/**
 	 * Get SQL Query Tables
