@@ -1,27 +1,31 @@
 <?php
+
 /**
  * Light SQL Parser Class
  * @author Marco Cesarato <cesarato.developer@gmail.com>
  * @copyright Copyright (c) 2018
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://github.com/marcocesarato/PHP-Light-SQL-Parser-Class
- * @version 0.1.87
+ * @version 0.1.88
  */
-class LightSQLParser {
+class LightSQLParser
+{
 	// Public
 	public $query = '';
 	// Private
 	protected static $connectors = array('OR', 'AND', 'ON', 'LIMIT', 'WHERE', 'JOIN', 'GROUP', 'ORDER', 'OPTION', 'LEFT', 'INNER', 'RIGHT', 'OUTER', 'SET', 'HAVING', 'VALUES', 'SELECT', '\(', '\)');
 	protected static $connectors_imploded = '';
+
 	/**
 	 * Constructor
 	 */
 	public function __construct($query = '') {
 		$this->query = $query;
-		if(empty(self::$connectors_imploded))
+		if (empty(self::$connectors_imploded))
 			self::$connectors_imploded = implode('|', self::$connectors);
 		return $this;
 	}
+
 	/**
 	 * Set SQL Query string
 	 */
@@ -29,35 +33,37 @@ class LightSQLParser {
 		$this->query = $query;
 		return $this;
 	}
+
 	/**
 	 * Get SQL Query method
 	 * @param $query
 	 * @return string
 	 */
-	public function method($query = null){
-		$methods = array('SELECT','INSERT','UPDATE','DELETE','RENAME','SHOW','SET','DROP','CREATE INDEX','CREATE TABLE','EXPLAIN','DESCRIBE','TRUNCATE','ALTER');
+	public function method($query = null) {
+		$methods = array('SELECT', 'INSERT', 'UPDATE', 'DELETE', 'RENAME', 'SHOW', 'SET', 'DROP', 'CREATE INDEX', 'CREATE TABLE', 'EXPLAIN', 'DESCRIBE', 'TRUNCATE', 'ALTER');
 		$queries = empty($query) ? $this->_queries() : array($query);
-		foreach($queries as $query){
-			foreach($methods as $method) {
+		foreach ($queries as $query) {
+			foreach ($methods as $method) {
 				$_method = str_replace(' ', '[\s]+', $method);
-				if(preg_match('#^[\s]*'.$_method.'[\s]+#i', $query)){
+				if (preg_match('#^[\s]*' . $_method . '[\s]+#i', $query)) {
 					return $method;
 				}
 			}
 		}
 		return '';
 	}
+
 	/**
 	 * Get Query fields (at the moment only SELECT/INSERT/UPDATE)
 	 * @param $query
 	 * @return array
 	 */
-	public function fields(){
+	public function fields() {
 		$fields = array();
 		$queries = $this->_queries();
-		foreach($queries as $query) {
+		foreach ($queries as $query) {
 			$method = $this->method($query);
-			switch ($method){
+			switch ($method) {
 				case 'SELECT':
 					preg_match('#SELECT[\s]+([\S\s]*)[\s]+FROM#i', $query, $matches);
 					if (!empty($matches[1])) {
@@ -118,32 +124,34 @@ class LightSQLParser {
 		}
 		return array_unique($fields);
 	}
+
 	/**
-	* Get SQL Query First Table
-	* @param $query
-	* @return string
-	*/
-	public function table(){
-	$tables = $this->tables();
-	return (isset($tables[0])) ? $tables[0] : null;
+	 * Get SQL Query First Table
+	 * @param $query
+	 * @return string
+	 */
+	public function table() {
+		$tables = $this->tables();
+		return (isset($tables[0])) ? $tables[0] : null;
 	}
+
 	/**
 	 * Get SQL Query Tables
 	 * @return array
 	 */
-	function tables(){
+	function tables() {
 		$results = array();
 		$queries = $this->_queries();
-		foreach($queries as $query) {
+		foreach ($queries as $query) {
 			$patterns = array(
-				'#[\s]+FROM[\s]+(([\s]*(?!'.self::$connectors_imploded.')[\w]+([\s]+(AS[\s]+)?(?!'.self::$connectors_imploded.')[\w]+)?[\s]*[,]?)+)#i',
+				'#[\s]+FROM[\s]+(([\s]*(?!' . self::$connectors_imploded . ')[\w]+([\s]+(AS[\s]+)?(?!' . self::$connectors_imploded . ')[\w]+)?[\s]*[,]?)+)#i',
 				'#[\s]*INSERT[\s]+INTO[\s]+([\w]+)#i',
 				'#[\s]*UPDATE[\s]+([\w]+)#i',
 				'#[\s]+[\s]+JOIN[\s]+([\w]+)#i',
 				'#[\s]+TABLE[\s]+([\w]+)#i'
 			);
-			foreach($patterns as $pattern){
-				preg_match_all($pattern,$query, $matches, PREG_SET_ORDER);
+			foreach ($patterns as $pattern) {
+				preg_match_all($pattern, $query, $matches, PREG_SET_ORDER);
 				foreach ($matches as $val) {
 					$tables = explode(',', $val[1]);
 					foreach ($tables as $table) {
@@ -155,12 +163,13 @@ class LightSQLParser {
 		}
 		return array_unique($results);
 	}
+
 	/**
 	 * Get all queries
 	 * @return array
 	 */
-	protected function _queries(){
-		$queries = preg_replace('#\/\*[\s\S]*?\*\/#','', $this->query);
+	protected function _queries() {
+		$queries = preg_replace('#\/\*[\s\S]*?\*\/#', '', $this->query);
 		$queries = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $queries);
 		$queries = preg_replace('#[\s]*UNION([\s]+ALL)?[\s]*#', ';', $queries);
 		$queries = explode(';', $queries);
