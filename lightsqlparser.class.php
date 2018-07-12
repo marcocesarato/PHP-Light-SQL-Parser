@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://github.com/marcocesarato/PHP-Light-SQL-Parser-Class
- * @version 0.1.89
+ * @version 0.1.90
  */
 class LightSQLParser
 {
