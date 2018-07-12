@@ -1,6 +1,6 @@
 # PHP Light SQL Parser Class
 
-Version 0.1
+Version: beta 1
 
 Github: https://github.com/marcocesarato/PHP-Light-SQL-Parser-Class
 
