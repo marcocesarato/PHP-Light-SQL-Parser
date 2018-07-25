@@ -69,3 +69,19 @@ array(2) {
   string(4) "City"
 }
 ```
+
+Methods
+
+
+### LightSQLParser
+
+| Method      | Parameters                          | Description                                        |
+| ----------- | ----------------------------------- | -------------------------------------------------- |
+| __construct |                                     | Constructor                                        |
+| setQuery    |                                     | Set SQL Query string                               |
+| method      | 	  param $query<br>	  return string | Get SQL Query method                               |
+| fields      | 	  param $query<br>	  return array  | Get Query fields (at the moment only SELECTINSERTUPDATE) |
+| table       | 	  param $query<br>	  return string | Get SQL Query First Table                          |
+| tables      | 	  return array                     | Get SQL Query Tables                               |
+
+
