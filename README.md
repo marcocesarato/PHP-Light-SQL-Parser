@@ -1,6 +1,6 @@
 # PHP Light SQL Parser Class
 
-**Version:** 0.1.93 beta
+**Version:** 0.1.94 beta
 
 **Github:** https://github.com/marcocesarato/PHP-Light-SQL-Parser-Class
 
@@ -70,7 +70,7 @@ array(2) {
 }
 ```
 
-Methods
+## Methods
 
 
 ### LightSQLParser
