@@ -1,6 +1,6 @@
 # PHP Light SQL Parser Class
 
-**Version:** 0.1.96 beta
+**Version:** 0.1.97 beta
 
 **Github:** https://github.com/marcocesarato/PHP-Light-SQL-Parser-Class
 
@@ -18,6 +18,13 @@ This parser is pretty light respect phpsqlparser or others php sql parser.
 ## Requirements
 
 - php 4+
+
+## Install
+
+### Composer
+1. Install composer
+2. Type `composer require marcocesarato/sqlparser`
+4. Enjoy
 
 ## Usage
 
