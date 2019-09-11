@@ -10,6 +10,11 @@
       "email": "cesarato.developer@gmail.com"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "marcocesarato\\sqlparser\\": "src"
+    }
+  },
   "require": {
     "php": ">=4.0.0"
   }
