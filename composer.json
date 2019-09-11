@@ -3,7 +3,7 @@
   "description": " This class can parse SQL to get query type, tables, field values, etc..  It takes an string with a SQL statements and parses it to extract its different components.  Currently the class can extract the SQL query method, the names of the tables involved in the query and the field values that are passed as parameters. This parser is pretty light respect phpsqlparser or others php sql parser.",
   "type": "library",
   "license": "GPL-3.0-or-later",
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "authors": [
     {
       "name": "Marco Cesarato",
