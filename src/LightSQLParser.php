@@ -5,10 +5,10 @@ namespace marcocesarato\sqlparser;
 /**
  * Light SQL Parser Class
  * @author Marco Cesarato <cesarato.developer@gmail.com>
- * @copyright Copyright (c) 2018
+ * @copyright Copyright (c) 2020
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://github.com/marcocesarato/PHP-Light-SQL-Parser-Class
- * @version 0.1.97
+ * @version 0.1.98
  */
 class LightSQLParser
 {
@@ -23,9 +23,9 @@ class LightSQLParser
 	 */
 	public function __construct($query = '') {
 		$this->query = $query;
-		if (empty(self::$connectors_imploded))
-			self::$connectors_imploded = implode('|', self::$connectors);
-		return $this;
+		if (empty(self::$connectors_imploded)) {
+            self::$connectors_imploded = implode('|', self::$connectors);
+        }
 	}
 
 	/**
@@ -38,12 +38,12 @@ class LightSQLParser
 
 	/**
 	 * Get SQL Query method
-	 * @param $query
+	 * @param $methodQuery
 	 * @return string
 	 */
-	public function method($query = null) {
+	public function method($methodQuery = null) {
 		$methods = array('SELECT', 'INSERT', 'UPDATE', 'DELETE', 'RENAME', 'SHOW', 'SET', 'DROP', 'CREATE INDEX', 'CREATE TABLE', 'EXPLAIN', 'DESCRIBE', 'TRUNCATE', 'ALTER');
-		$queries = empty($query) ? $this->_queries() : array($query);
+		$queries = empty($methodQuery) ? $this->_queries() : array($methodQuery);
 		foreach ($queries as $query) {
 			foreach ($methods as $method) {
 				$_method = str_replace(' ', '[\s]+', $method);
@@ -175,6 +175,9 @@ class LightSQLParser
 		$queries = preg_replace('#;(?:(?<=["\'];)|(?=["\']))#', '', $queries);
 		$queries = preg_replace('#[\s]*UNION([\s]+ALL)?[\s]*#', ';', $queries);
 		$queries = explode(';', $queries);
+		foreach ($queries as &$query) {
+            $query = str_replace(array('`', '"', "'"), '', $query);
+        }
 		return $queries;
 	}
 }
