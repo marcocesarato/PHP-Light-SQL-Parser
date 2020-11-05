@@ -8,7 +8,7 @@ namespace marcocesarato\sqlparser;
  * @copyright Copyright (c) 2020
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @link https://github.com/marcocesarato/PHP-Light-SQL-Parser-Class
- * @version 0.2.99
+ * @version 0.2.105
  */
 class LightSQLParser
 {
