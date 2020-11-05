@@ -29,20 +29,20 @@ This parser is pretty light respect phpsqlparser or others php sql parser.
 ## Usage
 
 ```php
-$lsp = new LightSQLParser("UPDATE Customers as ae SET ContactName = 'Alfred Schmidt', City= 'Frankfurt' WHERE CustomerID = 1;");
+$parser = new LightSQLParser("UPDATE Customers AS alias SET ContactName = 'Marco Cesarato', City = 'Milan' WHERE ID = 1;");
 ```
 
 OR
 
 ```php
-$lsp = new LightSQLParser();
-$lsp->setQuery("UPDATE Customers as ae SET ContactName = 'Alfred Schmidt', City= 'Frankfurt' WHERE CustomerID = 1;");
+$parser = new LightSQLParser();
+$parser->setQuery("UPDATE Customers AS alias SET ContactName = 'Marco Cesarato', City = 'Milan' WHERE ID = 1;");
 ```
 
 ### Method
-How retrieve query method:
+How to retrieve the query's method:
 ```php
-$lsp->method();
+$parser->getMethod();
 ```
 Output
 ```
@@ -50,9 +50,20 @@ string(6) "UPDATE"
 ```
 
 ### Tables
-How retrieve query tables:
+
+How to retrieve the main the query's table:
 ```php
-$lsp->tables();
+$parser->getTable();
+```
+Output
+```
+string(9) "Customers"
+```
+
+
+How to retrieve the query's tables:
+```php
+$parser->getAllTables();
 ```
 Output
 ```
@@ -63,9 +74,9 @@ array(1) {
 ```
 
 ### Fields
-How retrieve query fields:
+How to retrieve the query's fields:
 ```php
-$lsp->fields();
+$parser->getFields();
 ```
 Output
 ```
@@ -86,9 +97,15 @@ array(2) {
 | ----------- | ----------------------------------- | -------------------------------------------------- |
 | __construct |                                     | Constructor                                        |
 | setQuery    |                                     | Set SQL Query string                               |
-| method      | 	  param $query<br>	  return string | Get SQL Query method                               |
-| fields      | 	  param $query<br>	  return array  | Get Query fields (at the moment only SELECTINSERTUPDATE) |
-| table       | 	  param $query<br>	  return string | Get SQL Query First Table                          |
-| tables      | 	  return array                     | Get SQL Query Tables                               |
+| getQuery    |   return array                                  | Get SQL Query string                               |
+| getAllQuery    |  return string                                   | Get SQL All Query string                               |
+| getMethod      | 	  param $query<br>	  return string | Get SQL Query method                               |
+| getFields      | 	  param $query<br>	  return array  | Get Query fields (at the moment only SELECTINSERTUPDATE) |
+| getTable       | 	  param $query<br>	  return string | Get SQL Query First Table                          |
+| getTables      | 	  return array                     | Get SQL Query Tables                               |
+| getJoinTables      | 	  return array                     | Get SQL Query Join Tables                               |
+| hasJoin      | 	  return bool                     | Return if has join tables                               |
+| getSubQueries      | 	  return array                     | Get all SELECT subqueries                              |
+| hasSubQueries      | 	  return bool                     | Return if has subqueries                              |
 
 
